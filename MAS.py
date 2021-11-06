@@ -7,7 +7,7 @@ m = 10 #El profe puso 10
 k_prima = 10 #El profe puso 500
 rho = 0.1
 lamb = 0.8
-N = 100
+N = 1000
 feromona_inicial = 100
 beta = 2
 
@@ -17,6 +17,10 @@ n = 100
 #Parametros
 feromonas = {}
 conjunto_pareto = []
+
+
+MAX_VALUE1 = 0
+MAX_VALUE2 = 0
 
 def iniciacilizar_parametros():
     global feromonas
@@ -36,7 +40,7 @@ def get_feromona(i,j):
     return feromona_inicial
 
 def actualizar_feromonas(solucion):
-    delta_tau = 1 / (solucion['f1'] + solucion['f2']) #4.6
+    delta_tau = 1 / (solucion['f1']/MAX_VALUE1 + solucion['f2']/MAX_VALUE2) #4.6
     for arista in solucion['aristas']:
         feromona = get_feromona(arista[0],arista[1]) #arista tiene la forma (i,j)
         feromona = (1-rho)*feromona + rho*delta_tau #4.4
@@ -107,8 +111,9 @@ def siguiente_nodo(i,vecindario,lambda_k):
 def construir_solucion(lambda_k):
     solucion = {"aristas": [], "f1": 0, "f2": 0}
     vecindario = set(range(n))
-    actual = 0
-    vecindario.remove(0)
+    inicial = random.randint(0,99)
+    actual = inicial
+    vecindario.remove(inicial)
     while len(vecindario) != 0:
         siguiente = siguiente_nodo(actual,list(vecindario),lambda_k)
         solucion['aristas'].append((actual,siguiente))
@@ -117,9 +122,9 @@ def construir_solucion(lambda_k):
         actual = siguiente      
         vecindario.remove(actual)
         
-    solucion['aristas'].append((actual,0))
-    solucion['f1'] += costos1[actual][0]
-    solucion['f2'] += costos2[actual][0]
+    solucion['aristas'].append((actual,inicial))
+    solucion['f1'] += costos1[actual][inicial]
+    solucion['f2'] += costos2[actual][inicial]
     return solucion
 
 
@@ -153,6 +158,7 @@ def actualizar_conjunto_pareto(solucion):
 
 
 
+
 def MAS():
     generacion = 0
     desde_sin_cambio = 0
@@ -175,7 +181,9 @@ def MAS():
    # for solucion in conjunto_pareto:
     #    print(solucion)
 
-print('KROAB')
+
+
+#Find max value to normalize
 l1 = leer_txt('tsp_KROAB100.TSP.TXT')
 costos1, costos2 = cargar_matriz(l1)
 for row in costos1:
@@ -184,6 +192,12 @@ for row in costos1:
 for row in costos2:
     for i  in range(len(row)):
         row[i] = float(row[i])
+for row in costos1:
+    MAX_VALUE1 += max(row)
+for row in costos2:
+    MAX_VALUE2 += max(row)
+
+MAS()
 
 #m3_promedio = 0
 #for i in range(5):
@@ -197,7 +211,6 @@ with open('solab100.csv','w') as file:
     for solucion in conjunto_pareto:
         file.write(f"{solucion['f1']},{solucion['f2']}")
 
-print('KROAC')
 
 l1 = leer_txt('tsp_kroac100.tsp.txt')
 costos1, costos2 = cargar_matriz(l1)
@@ -210,5 +223,15 @@ for row in costos2:
 with open('solac100.csv','w') as file:
     for solucion in conjunto_pareto:
         file.write(f"{solucion['f1']},{solucion['f2']}")
-
-#MAS()
+MAX_VALUE1 = 0
+MAX_VALUE2 = 0
+for row in costos1:
+    MAX_VALUE1 += max(row)
+for row in costos2:
+    MAX_VALUE2 += max(row)
+conjunto_pareto=[]
+MAS()
+plot2 = plt.figure(2)
+plt.plot([x['f1'] for x in conjunto_pareto],[y['f2'] for y in conjunto_pareto],'o', color='black')
+plt.title('KROAC100')
+plt.show()
