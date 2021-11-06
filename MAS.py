@@ -1,6 +1,7 @@
 import random
 import matplotlib.pyplot as plt
 from lector import leer_txt,cargar_matriz
+from metricas import m3
 #Hiperparametros
 m = 10 #El profe puso 10
 k_prima = 10 #El profe puso 500
@@ -183,10 +184,21 @@ for row in costos1:
 for row in costos2:
     for i  in range(len(row)):
         row[i] = float(row[i])
-MAS()
-plt.plot([x['f1'] for x in conjunto_pareto],[y['f2'] for y in conjunto_pareto],'o', color='black')
-plt.show()
+
+#m3_promedio = 0
+#for i in range(5):
+#    MAS()
+#    m3_promedio += m3(conjunto_pareto)
+#m3_promedio = m3_promedio/5
+#print('M3:',m3_promedio)
+#plt.plot([x['f1'] for x in conjunto_pareto],[y['f2'] for y in conjunto_pareto],'o', color='black')
+#plt.show()
+with open('solab100.csv','w') as file:
+    for solucion in conjunto_pareto:
+        file.write(f"{solucion['f1']},{solucion['f2']}")
+
 print('KROAC')
+
 l1 = leer_txt('tsp_kroac100.tsp.txt')
 costos1, costos2 = cargar_matriz(l1)
 for row in costos1:
@@ -195,4 +207,8 @@ for row in costos1:
 for row in costos2:
     for i  in range(len(row)):
         row[i] = float(row[i])
+with open('solac100.csv','w') as file:
+    for solucion in conjunto_pareto:
+        file.write(f"{solucion['f1']},{solucion['f2']}")
+
 #MAS()
