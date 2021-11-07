@@ -1,21 +1,11 @@
-from spea.spea import spea
-from lector import mab1, mab2,mac1, mac2, spea_f_builder
+from spea.SPEA import spea
+from lector import mab1, mab2,mac1, mac2, spea_f_builder, Y_TRUE_KROAC
 import matplotlib.pyplot as plt
-from MAS import calcular_metricas
+from mas.MAS import calcular_metricas
 
 def run_spea(f, generacion, poblacion):
     pareto_set = spea(poblacion, generacion, f)
     return [{"f1": org[0],"f2": org[1]} for org in map(f, pareto_set)]
-
-def conseguir_Y_true(filename):
-    y_true = []
-    with open(filename,'r') as file:
-        lines = file.readlines()
-        for line in lines:
-            a,b = line.split(',')
-            y_true.append({'f1':float(a), 'f2': float(b)})
-    return y_true
-
 
 def menuPrincipal():
     print('1. KROAB100. SPEA')
@@ -66,7 +56,7 @@ def menuPrincipal():
         m = int((input("Ingrese el número de hormigas...")))
         N = int((input("Ingrese el número de iteraciones para el MAS...")))
 
-y_true_ac = conseguir_Y_true('y_true_kroac100.csv')
+
 
 
 sigma = 20

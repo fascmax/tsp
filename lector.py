@@ -26,6 +26,19 @@ l2 = leer_txt(KROAC_FILE)
 mab1, mab2 = cargar_matriz(l1)
 mac1, mac2 = cargar_matriz(l2)
 
+def get_y_true(filename):
+    y_true = []
+    with open(filename) as file:
+        for line in file.readlines():
+            f1, f2 = line.split(',')
+            y_true.append({"f1": f1, "f2": f2})
+
+    return y_true
+
+Y_TRUE_KROAB = get_y_true(Y_TRUE_KROAB_FILE)
+Y_TRUE_KROAC = get_y_true(Y_TRUE_KROAC_FILE)
+
+
 
 def spea_f_builder(matriz_obj_a, matriz_obj_b):
     def f(x):
