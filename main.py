@@ -1,3 +1,11 @@
+from spea.spea import spea
+from lector import mab1, mab2,mac1, mac2, spea_f_builder
+
+def run_spea(f, generacion, poblacion):
+    pareto_set = spea(poblacion, generacion, f)
+    return [{"f1": org[0],"f2": org[1]} for org in map(f, pareto_set)]
+
+
 def menuPrincipal():
     print('1. KROAB100. SPEA')
     print('2. KROAB100. MAS')
@@ -11,6 +19,10 @@ def menuPrincipal():
         option = int(input("Ingrese una opción..."))
     if option == 1:
         generacion = int((input("Ingrese el número de generaciones...")))
+        poblacion = int((input("Ingrese el tamaño de la poblacion...")))
+        f = spea_f_builder(mab1, mab2)        
+        run_spea(f, generacion, poblacion)
+
     elif option == 2:
         m = int((input("Ingrese el número de hormigas...")))
         N = int((input("Ingrese el número de Iteraciones...")))
@@ -20,6 +32,9 @@ def menuPrincipal():
         N = int((input("Ingrese el número de iteraciones para el MAS...")))
     elif option == 4:
         generacion = int((input("Ingrese el número de generaciones...")))
+        poblacion = int((input("Ingrese el tamaño de la poblacion...")))
+        f = spea_f_builder(mac1, mac2)        
+        run_spea(f, generacion, poblacion)
     elif option == 5:
         m = int((input("Ingrese el número de hormigas...")))
         N = int((input("Ingrese el número de Iteraciones...")))
@@ -29,3 +44,5 @@ def menuPrincipal():
         N = int((input("Ingrese el número de iteraciones para el MAS...")))
 
 
+
+menuPrincipal()
