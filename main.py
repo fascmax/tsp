@@ -1,11 +1,23 @@
 from spea.SPEA import spea
-from lector import mab1, mab2,mac1, mac2, spea_f_builder, Y_TRUE_KROAC
+from lector import Y_TRUE_KROAB, mab1, mab2,mac1, mac2, spea_f_builder, Y_TRUE_KROAC
 import matplotlib.pyplot as plt
 from mas.MAS import calcular_metricas
-
+import math
 def run_spea(f, generacion, poblacion):
     pareto_set = spea(poblacion, generacion, f)
     return [{"f1": org[0],"f2": org[1]} for org in map(f, pareto_set)]
+
+def get_sigma(y_true):
+    lowest_1 = y_true[0]
+    lowest_2 = y_true[1]
+    for solucion in y_true:
+        if solucion['f1'] < lowest_1['f1']:
+            lowest_1 = solucion
+    for solucion in y_true:
+        if solucion['f2'] < lowest_2['f2']:
+            lowest_2 = solucion
+    return math.sqrt((lowest_1['f1'] - lowest_2['f1'])**2 + (lowest_1['f2']-lowest_2['f2'])**2)/10
+
 
 def menuPrincipal():
     print('1. KROAB100. SPEA')
@@ -28,7 +40,7 @@ def menuPrincipal():
         m = int((input("Ingrese el número de hormigas...")))
         N = int((input("Iteraciones del MAS...")))
         K = int((input("Numero de veces que se ejecutara el algoritmo...")))
-        (m1,m2,m3,error) = calcular_metricas(m,N,'tsp_KROAB100.TSP.TXT',y_true_ab)
+        (m1,m2,m3,error) = calcular_metricas(m,N,'tsp_KROAB100.TSP.TXT',Y_TRUE_KROAB)
         print(f"{m1=}")
         print(f"{m2=}")
         print(f"{m3=}")
@@ -46,7 +58,7 @@ def menuPrincipal():
         m = int((input("Ingrese el número de hormigas...")))
         N = int((input("Iteraciones del MAS...")))
         K = int((input("Numero de veces que se ejecutara el algoritmo...")))
-        (m1,m2,m3,error) = calcular_metricas(m,N,'tsp_kroac100.tsp.txt',y_true_ac,K,sigma)
+        (m1,m2,m3,error) = calcular_metricas(m,N,'tsp_kroac100.tsp.txt',Y_TRUE_KROAC ,K,sigma_ac)
         print(f"{m1=}")
         print(f"{m2=}")
         print(f"{m3=}")
@@ -58,6 +70,6 @@ def menuPrincipal():
 
 
 
+sigma_ac = get_sigma(Y_TRUE_KROAC)
 
-sigma = 20
 menuPrincipal()

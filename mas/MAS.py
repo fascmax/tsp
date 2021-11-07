@@ -261,6 +261,10 @@ def calcular_metricas(m,N,fileName,Ytrue,simulaciones,sigma):
     m2 = m2 / simulaciones
     m3 = m3 / simulaciones
     error = error / simulaciones
+    plt.plot([x['f1'] for x in Ytrue],[y['f2'] for y in Ytrue],'o', color='red')
+    #conjunto_pareto = run_simulation(10,100,'tsp_KROAB100.TSP.TXT')
+    plt.plot([x['f1'] for x in pareto],[y['f2'] for y in pareto],'o', color='blue')
+    plt.show()
     return m1,m2,m3,error
 def construir_Ytrue(Y_true,solucion):
     for solucion_pareto in Y_true:
@@ -286,4 +290,3 @@ def get_Ytrue(m,N,fileName,simulaciones):
 #conjunto_pareto = run_simulation(10,100,'tsp_KROAB100.TSP.TXT')
 #plt.plot([x['f1'] for x in conjunto_pareto],[y['f2'] for y in conjunto_pareto],'o', color='blue')
 
-plt.show()
