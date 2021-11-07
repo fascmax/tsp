@@ -1,5 +1,17 @@
 import matplotlib.pyplot as plt
+import math
 from MAS import calcular_metricas
+
+def get_sigma(y_true):
+    lowest_1 = y_true[0]
+    lowest_2 = y_true[1]
+    for solucion in y_true:
+        if solucion['f1'] < lowest_1['f1']:
+            lowest_1 = solucion
+    for solucion in y_true:
+        if solucion['f2'] < lowest_2['f2']:
+            lowest_2 = solucion
+    return math.sqrt((lowest_1['f1'] - lowest_2['f1'])**2 + (lowest_1['f2']-lowest_2['f2'])**2)/10
 
 def conseguir_Y_true(filename):
     y_true = []
@@ -42,7 +54,7 @@ def menuPrincipal():
         m = int((input("Ingrese el número de hormigas...")))
         N = int((input("Iteraciones del MAS...")))
         K = int((input("Numero de veces que se ejecutara el algoritmo...")))
-        (m1,m2,m3,error) = calcular_metricas(m,N,'tsp_kroac100.tsp.txt',y_true_ac,K,sigma)
+        (m1,m2,m3,error) = calcular_metricas(m,N,'tsp_kroac100.tsp.txt',y_true_ac,K,sigma_ac)
         print(f"{m1=}")
         print(f"{m2=}")
         print(f"{m3=}")
@@ -53,6 +65,5 @@ def menuPrincipal():
         N = int((input("Ingrese el número de iteraciones para el MAS...")))
 
 y_true_ac = conseguir_Y_true('y_true_kroac100.csv')
-
-sigma = 20
+sigma_ac = get_sigma(y_true_ac)
 menuPrincipal()
