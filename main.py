@@ -1,10 +1,11 @@
-from spea.spea import spea
-from lector import mab1, mab2,mac1, mac2, spea_f_builder
+from spea.SPEA import spea
+from lector import mab1, mab2,mac1, mac2, spea_f_builder, Y_TRUE_KROAC
+import matplotlib.pyplot as plt
+from mas.MAS import calcular_metricas
 
 def run_spea(f, generacion, poblacion):
     pareto_set = spea(poblacion, generacion, f)
     return [{"f1": org[0],"f2": org[1]} for org in map(f, pareto_set)]
-
 
 def menuPrincipal():
     print('1. KROAB100. SPEA')
@@ -25,11 +26,17 @@ def menuPrincipal():
 
     elif option == 2:
         m = int((input("Ingrese el número de hormigas...")))
-        N = int((input("Ingrese el número de Iteraciones...")))
+        N = int((input("Iteraciones del MAS...")))
+        K = int((input("Numero de veces que se ejecutara el algoritmo...")))
+        (m1,m2,m3,error) = calcular_metricas(m,N,'tsp_KROAB100.TSP.TXT',y_true_ab)
+        print(f"{m1=}")
+        print(f"{m2=}")
+        print(f"{m3=}")
+        print(f"{error=}")
     elif option == 3:
         generacion = int((input("Ingrese el número de generaciones para el SPEA...")))
         m = int((input("Ingrese el número de hormigas...")))
-        N = int((input("Ingrese el número de iteraciones para el MAS...")))
+        N = int((input("Ingrese el número de iteraciones del MAS...")))
     elif option == 4:
         generacion = int((input("Ingrese el número de generaciones...")))
         poblacion = int((input("Ingrese el tamaño de la poblacion...")))
@@ -37,7 +44,13 @@ def menuPrincipal():
         run_spea(f, generacion, poblacion)
     elif option == 5:
         m = int((input("Ingrese el número de hormigas...")))
-        N = int((input("Ingrese el número de Iteraciones...")))
+        N = int((input("Iteraciones del MAS...")))
+        K = int((input("Numero de veces que se ejecutara el algoritmo...")))
+        (m1,m2,m3,error) = calcular_metricas(m,N,'tsp_kroac100.tsp.txt',y_true_ac,K,sigma)
+        print(f"{m1=}")
+        print(f"{m2=}")
+        print(f"{m3=}")
+        print(f"{error=}")
     elif option == 6:
         generacion = int((input("Ingrese el número de generaciones para el SPEA...")))
         m = int((input("Ingrese el número de hormigas...")))
@@ -45,4 +58,6 @@ def menuPrincipal():
 
 
 
+
+sigma = 20
 menuPrincipal()

@@ -1,7 +1,10 @@
 import random
 import matplotlib.pyplot as plt
 from lector import leer_txt,cargar_matriz
-from metricas import m3
+from metricas import m3 as calcular_m3
+from metricas import m2 as calcular_m2
+from metricas import m1 as calcular_m1
+from metricas import error as calcular_error
 #Hiperparametros
 m = 10 #El profe puso 10
 k_prima = 100 #El profe puso 500
@@ -243,7 +246,7 @@ def run_simulation(hormigas,iteraciones,fileName):
     MAS()
     return conjunto_pareto
 
-def calcular_metricas(m,N,fileName,Ytrue,simulaciones):
+def calcular_metricas(m,N,fileName,Ytrue,simulaciones,sigma):
     m1 = 0
     m2 = 0
     m3 = 0
@@ -251,13 +254,14 @@ def calcular_metricas(m,N,fileName,Ytrue,simulaciones):
     for i in range(simulaciones):
         pareto = run_simulation(m,N,fileName)
         m1 += calcular_m1(pareto,Ytrue)
-        m2 += calcular_m2(pareto)
+        m2 += calcular_m2(pareto,sigma)
         m3 += calcular_m3(pareto)
         error += calcular_error(pareto,Ytrue)
     m1 = m1 / simulaciones
     m2 = m2 / simulaciones
     m3 = m3 / simulaciones
     error = error / simulaciones
+    return m1,m2,m3,error
 def construir_Ytrue(Y_true,solucion):
     for solucion_pareto in Y_true:
         if es_dominado(solucion,solucion_pareto):
@@ -277,9 +281,9 @@ def get_Ytrue(m,N,fileName,simulaciones):
             Y_true = construir_Ytrue(Y_true,solucion)
     return Y_true
         
-Y_true = get_Ytrue(10,100,'tsp_KROAB100.TSP.TXT',30)
-plt.plot([x['f1'] for x in Y_true],[y['f2'] for y in Y_true],'o', color='red')
-conjunto_pareto = run_simulation(10,100,'tsp_KROAB100.TSP.TXT')
-plt.plot([x['f1'] for x in conjunto_pareto],[y['f2'] for y in conjunto_pareto],'o', color='blue')
+#Y_true = get_Ytrue(10,100,'tsp_KROAB100.TSP.TXT',30)
+#plt.plot([x['f1'] for x in Y_true],[y['f2'] for y in Y_true],'o', color='red')
+#conjunto_pareto = run_simulation(10,100,'tsp_KROAB100.TSP.TXT')
+#plt.plot([x['f1'] for x in conjunto_pareto],[y['f2'] for y in conjunto_pareto],'o', color='blue')
 
 plt.show()
