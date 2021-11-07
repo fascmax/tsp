@@ -42,6 +42,9 @@ def m1(pareto_front, true_front):
     return count * total
 def error(pareto_front, true_front):
     cardinality = len(pareto_front)
+    pareto_front = [(x['f1'],x['f2']) for x in pareto_front]
+    true_front = [(x['f1'],x['f2']) for x in true_front]
+
     count = 0
     for solucion in pareto_front:
         if solucion in true_front:
