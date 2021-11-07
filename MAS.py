@@ -4,7 +4,7 @@ from lector import leer_txt,cargar_matriz
 from metricas import m3
 #Hiperparametros
 m = 10 #El profe puso 10
-k_prima = 10 #El profe puso 500
+k_prima = 100 #El profe puso 500
 rho = 0.1
 lamb = 0.8
 N = 1000
@@ -45,7 +45,7 @@ def actualizar_feromonas(solucion):
         feromona = get_feromona(arista[0],arista[1]) #arista tiene la forma (i,j)
         feromona = (1-rho)*feromona + rho*delta_tau #4.4
         feromonas[arista] = feromona
-
+    
 
 
 def reiniciar_feromonas():
@@ -166,8 +166,8 @@ def MAS():
     while not condicion_parada(generacion):
         generacion = generacion  + 1
         se_actualizo = False
-        for i in range(m):
-            solucion = construir_solucion(i) # Ecuacion 4.9
+        for i in range(1,m+1):
+            solucion = construir_solucion((i-1)/(m-1)) # Ecuacion 4.9
             bandera = actualizar_conjunto_pareto(solucion) 
             se_actualizo = se_actualizo or bandera
             if bandera:
@@ -182,56 +182,104 @@ def MAS():
     #    print(solucion)
 
 
+def run_simulation_with_plot(hormigas,iteraciones,fileName):
+    global feromonas
+    global conjunto_pareto
+    global m
+    global N
+    global MAX_VALUE1
+    global MAX_VALUE2
+    global costos1
+    global costos2
+    feromonas = {}
+    conjunto_pareto = []
+    m = hormigas
+    N = iteraciones
+    l1 = leer_txt(fileName)
+    MAX_VALUE1 = 0
+    MAX_VALUE2 = 0
+    costos1, costos2 = cargar_matriz(l1)
+    for row in costos1:
+        for i  in range(len(row)):
+            row[i] = float(row[i])
+    for row in costos2:
+        for i  in range(len(row)):
+            row[i] = float(row[i])
+    for row in costos1:
+        MAX_VALUE1 += max(row)
+    for row in costos2:
+        MAX_VALUE2 += max(row)
+    MAS()
+    plt.plot([x['f1'] for x in conjunto_pareto],[y['f2'] for y in conjunto_pareto],'o', color='blue')
+    plt.show()
+def run_simulation(hormigas,iteraciones,fileName):
+    global feromonas
+    global conjunto_pareto
+    global m
+    global N
+    global MAX_VALUE1
+    global MAX_VALUE2
+    global costos1
+    global costos2
+    feromonas = {}
+    conjunto_pareto = []
+    m = hormigas
+    N = iteraciones
+    l1 = leer_txt(fileName)
+    MAX_VALUE1 = 0
+    MAX_VALUE2 = 0
+    costos1, costos2 = cargar_matriz(l1)
+    for row in costos1:
+        for i  in range(len(row)):
+            row[i] = float(row[i])
+    for row in costos2:
+        for i  in range(len(row)):
+            row[i] = float(row[i])
+    for row in costos1:
+        MAX_VALUE1 += max(row)
+    for row in costos2:
+        MAX_VALUE2 += max(row)
+    
+    MAS()
+    return conjunto_pareto
 
-#Find max value to normalize
-l1 = leer_txt('tsp_KROAB100.TSP.TXT')
-costos1, costos2 = cargar_matriz(l1)
-for row in costos1:
-    for i  in range(len(row)):
-        row[i] = float(row[i])
-for row in costos2:
-    for i  in range(len(row)):
-        row[i] = float(row[i])
-for row in costos1:
-    MAX_VALUE1 += max(row)
-for row in costos2:
-    MAX_VALUE2 += max(row)
+def calcular_metricas(m,N,fileName,Ytrue,simulaciones):
+    m1 = 0
+    m2 = 0
+    m3 = 0
+    error = 0
+    for i in range(simulaciones):
+        pareto = run_simulation(m,N,fileName)
+        m1 += calcular_m1(pareto,Ytrue)
+        m2 += calcular_m2(pareto)
+        m3 += calcular_m3(pareto)
+        error += calcular_error(pareto,Ytrue)
+    m1 = m1 / simulaciones
+    m2 = m2 / simulaciones
+    m3 = m3 / simulaciones
+    error = error / simulaciones
+def construir_Ytrue(Y_true,solucion):
+    for solucion_pareto in Y_true:
+        if es_dominado(solucion,solucion_pareto):
+            return Y_true
+    nuevo_conjunto_pareto = []
+    for solucion_pareto in Y_true:
+        if not es_dominado(solucion_pareto,solucion):
+            nuevo_conjunto_pareto.append(solucion_pareto)
+    Y_true = nuevo_conjunto_pareto
+    Y_true.append(solucion)
+    return Y_true
+def get_Ytrue(m,N,fileName,simulaciones):
+    Y_true = []
+    for i in range(simulaciones):
+        pareto = run_simulation(m,N,fileName)
+        for solucion in pareto:
+            Y_true = construir_Ytrue(Y_true,solucion)
+    return Y_true
+        
+Y_true = get_Ytrue(10,100,'tsp_KROAB100.TSP.TXT',30)
+plt.plot([x['f1'] for x in Y_true],[y['f2'] for y in Y_true],'o', color='red')
+conjunto_pareto = run_simulation(10,100,'tsp_KROAB100.TSP.TXT')
+plt.plot([x['f1'] for x in conjunto_pareto],[y['f2'] for y in conjunto_pareto],'o', color='blue')
 
-MAS()
-
-#m3_promedio = 0
-#for i in range(5):
-#    MAS()
-#    m3_promedio += m3(conjunto_pareto)
-#m3_promedio = m3_promedio/5
-#print('M3:',m3_promedio)
-#plt.plot([x['f1'] for x in conjunto_pareto],[y['f2'] for y in conjunto_pareto],'o', color='black')
-#plt.show()
-with open('solab100.csv','w') as file:
-    for solucion in conjunto_pareto:
-        file.write(f"{solucion['f1']},{solucion['f2']}")
-
-
-l1 = leer_txt('tsp_kroac100.tsp.txt')
-costos1, costos2 = cargar_matriz(l1)
-for row in costos1:
-    for i  in range(len(row)):
-        row[i] = float(row[i])
-for row in costos2:
-    for i  in range(len(row)):
-        row[i] = float(row[i])
-with open('solac100.csv','w') as file:
-    for solucion in conjunto_pareto:
-        file.write(f"{solucion['f1']},{solucion['f2']}")
-MAX_VALUE1 = 0
-MAX_VALUE2 = 0
-for row in costos1:
-    MAX_VALUE1 += max(row)
-for row in costos2:
-    MAX_VALUE2 += max(row)
-conjunto_pareto=[]
-MAS()
-plot2 = plt.figure(2)
-plt.plot([x['f1'] for x in conjunto_pareto],[y['f2'] for y in conjunto_pareto],'o', color='black')
-plt.title('KROAC100')
 plt.show()
