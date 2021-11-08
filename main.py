@@ -2,10 +2,25 @@ from spea.SPEA import spea
 from lector import Y_TRUE_KROAB, mab1, mab2,mac1, mac2, spea_f_builder, Y_TRUE_KROAC
 import matplotlib.pyplot as plt
 from mas.MAS import calcular_metricas
+from metricas import m1,m2,m3,error
 import math
-def run_spea(f, generacion, poblacion):
-    pareto_set = spea(poblacion, generacion, f)
-    return [{"f1": org[0],"f2": org[1]} for org in map(f, pareto_set)]
+def run_spea(f, generacion, poblacion,simulaciones,y_true):
+    M1 = 0
+    M2 = 0
+    M3 = 0
+    ERROR = 0
+    for i in range(simulaciones):
+        pareto_set = spea(poblacion, generacion, f)
+        pareto_set = [{"f1": org[0],"f2": org[1]} for org in map(f, pareto_set)]
+        M1 += m1(pareto_set,y_true)
+        M2 += m2(pareto_set,sigma_ac)
+        M3 += m3(pareto_set)
+        ERROR += error(pareto_set,y_true)
+    M1 /= simulaciones
+    M2 /= simulaciones
+    M3 /= simulaciones
+    ERROR /= simulaciones
+    return M1,M2,M3,ERROR,pareto_set
 
 def get_sigma(y_true):
     lowest_1 = y_true[0]
@@ -34,17 +49,20 @@ def menuPrincipal():
         generacion = int((input("Ingrese el número de generaciones...")))
         poblacion = int((input("Ingrese el tamaño de la poblacion...")))
         f = spea_f_builder(mab1, mab2)        
-        run_spea(f, generacion, poblacion)
-
+        (M1,M2,M3,ERROR,pareto) = run_spea(f, generacion, poblacion,10,Y_TRUE_KROAB)
+        print(f"{M1=}")
+        print(f"{M2=}")
+        print(f"{M3=}")
+        print(f"{ERROR=}")
     elif option == 2:
         m = int((input("Ingrese el número de hormigas...")))
         N = int((input("Iteraciones del MAS...")))
         K = int((input("Numero de veces que se ejecutara el algoritmo...")))
-        (m1,m2,m3,error) = calcular_metricas(m,N,'tsp_KROAB100.TSP.TXT',Y_TRUE_KROAB)
-        print(f"{m1=}")
-        print(f"{m2=}")
-        print(f"{m3=}")
-        print(f"{error=}")
+        (M1,M2,M3,ERROR) = calcular_metricas(m,N,'./datasets/tsp_kroab100.tsp.txt',Y_TRUE_KROAB,K,sigma_ab)
+        print(f"{M1=}")
+        print(f"{M2=}")
+        print(f"{M3=}")
+        print(f"{ERROR=}")
     elif option == 3:
         generacion = int((input("Ingrese el número de generaciones para el SPEA...")))
         m = int((input("Ingrese el número de hormigas...")))
@@ -53,16 +71,20 @@ def menuPrincipal():
         generacion = int((input("Ingrese el número de generaciones...")))
         poblacion = int((input("Ingrese el tamaño de la poblacion...")))
         f = spea_f_builder(mac1, mac2)        
-        run_spea(f, generacion, poblacion)
+        (M1,M2,M3,ERROR,pareto) = run_spea(f, generacion, poblacion,10,Y_TRUE_KROAC)
+        print(f"{M1=}")
+        print(f"{M2=}")
+        print(f"{M3=}")
+        print(f"{ERROR=}")
     elif option == 5:
         m = int((input("Ingrese el número de hormigas...")))
         N = int((input("Iteraciones del MAS...")))
         K = int((input("Numero de veces que se ejecutara el algoritmo...")))
-        (m1,m2,m3,error) = calcular_metricas(m,N,'tsp_kroac100.tsp.txt',Y_TRUE_KROAC ,K,sigma_ac)
-        print(f"{m1=}")
-        print(f"{m2=}")
-        print(f"{m3=}")
-        print(f"{error=}")
+        (M1,M2,M3,ERROR) = calcular_metricas(m,N,'./datasets/tsp_kroac100.tsp.txt',Y_TRUE_KROAC ,K,sigma_ac)
+        print(f"{M1=}")
+        print(f"{M2=}")
+        print(f"{M3=}")
+        print(f"{ERROR=}")
     elif option == 6:
         generacion = int((input("Ingrese el número de generaciones para el SPEA...")))
         m = int((input("Ingrese el número de hormigas...")))
@@ -71,5 +93,5 @@ def menuPrincipal():
 
 
 sigma_ac = get_sigma(Y_TRUE_KROAC)
-
+sigma_ab = get_sigma(Y_TRUE_KROAB)
 menuPrincipal()

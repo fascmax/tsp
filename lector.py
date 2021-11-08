@@ -31,7 +31,7 @@ def get_y_true(filename):
     with open(filename) as file:
         for line in file.readlines():
             f1, f2 = line.split(',')
-            y_true.append({"f1": f1, "f2": f2})
+            y_true.append({"f1": float(f1), "f2": float(f2)})
 
     return y_true
 

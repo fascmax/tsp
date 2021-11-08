@@ -91,7 +91,7 @@ def mutate(individual):
     
     return tuple(mutated_individual)
 
-def spea(n, iterations, f, P=0.1, MAX_PARETO_SIZE = 50, MUTATION_RATE = 0.6):
+def spea(n, iterations, f, P=0.6, MAX_PARETO_SIZE = 50, MUTATION_RATE = 0.1):
     """
     Funcion que ejecuta el algoritmo de SPEA.
 
