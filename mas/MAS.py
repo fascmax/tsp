@@ -263,9 +263,7 @@ def calcular_metricas(m,N,fileName,Ytrue,simulaciones,sigma):
     error = error / simulaciones
     plt.plot([x['f1'] for x in Ytrue],[y['f2'] for y in Ytrue],'o', color='red')
     #conjunto_pareto = run_simulation(10,100,'tsp_KROAB100.TSP.TXT')
-    plt.plot([x['f1'] for x in pareto],[y['f2'] for y in pareto],'o', color='blue')
-    plt.show()
-    return m1,m2,m3,error
+    return m1,m2,m3,error,pareto
 def construir_Ytrue(Y_true,solucion):
     for solucion_pareto in Y_true:
         if es_dominado(solucion,solucion_pareto):
