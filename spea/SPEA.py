@@ -99,7 +99,7 @@ def spea(n, iterations, f, P=0.6, MAX_PARETO_SIZE = 50, MUTATION_RATE = 0.1):
 
     * n: tamaño de la poblacion
     * iterations: numero de iteraciones que realizara el algoritmo
-    * f: funcion de evaluacion de organismos
+    * f:    funcion de evaluacion de organismos
     * P: probabilidad de elegir 
     """
             

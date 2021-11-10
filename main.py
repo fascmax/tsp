@@ -88,7 +88,7 @@ def menuPrincipal():
         print(f"{M3=}")
         print(f"{ERROR=}")
         plt.plot([x['f1'] for x in pareto1],[y['f2'] for y in pareto1],'o', color='blue')
-        plt.plot([x['f1'] for x in pareto2],[y['f2'] for y in pareto2],'o', color='yellow')
+        plt.plot([x['f1'] for x in pareto2],[y['f2'] for y in pareto2],'o', color='green')
         plt.plot([x['f1'] for x in Y_TRUE_KROAB],[y['f2'] for y in Y_TRUE_KROAB],'o', color='red')
         plt.show()
     elif option == 4:
@@ -134,7 +134,7 @@ def menuPrincipal():
         print(f"{M3=}")
         print(f"{ERROR=}")        
         plt.plot([x['f1'] for x in pareto1],[y['f2'] for y in pareto1],'o', color='blue')
-        plt.plot([x['f1'] for x in pareto2],[y['f2'] for y in pareto2],'o', color='yellow')
+        plt.plot([x['f1'] for x in pareto2],[y['f2'] for y in pareto2],'o', color='green')
         plt.plot([x['f1'] for x in Y_TRUE_KROAC],[y['f2'] for y in Y_TRUE_KROAC],'o', color='red')
         plt.show()
 sigma_ac = get_sigma(Y_TRUE_KROAC)

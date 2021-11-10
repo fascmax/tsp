@@ -7,7 +7,7 @@ from metricas import m1 as calcular_m1
 from metricas import error as calcular_error
 #Hiperparametros
 m = 10 #El profe puso 10
-k_prima = 100 #El profe puso 500
+k_prima = 50 #El profe puso 500
 rho = 0.1
 lamb = 0.8
 N = 1000
